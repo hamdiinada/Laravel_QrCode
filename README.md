@@ -1,61 +1,104 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
 
-## About Laravel
+## Laravel Project
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+In this project, i will use simplesoftwareio/simple-qrcode package to generate simple, text, numeric and image qr code in laravel 8 app.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 1-Installing qrcode Generator Package
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Code :
+```
+composer require simplesoftwareio/simple-qrcode
+```
+## 2-Configure qrcode Generator Package
 
-## Learning Laravel
+Here In this step,we will configure the simplesoftwareio/simple-qrcode package in laravel 8 app. So, Open the providers/config/app.php file and register the provider and aliases for milon/qrcode.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Code :
+```
+'providers' => [
+    ....
+    SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class
+],
+  
+'aliases' => [
+    ....
+    'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class
+]
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 3-Create Routes
+In this step,we will add the qr code generation routes in web.php file, which is located inside routes directory:
+Code :
+```
+use App\Http\Controllers\QrCodeGeneratorController;
+Route::get('/qr-code', [QrCodeGeneratorController::class, 'index']);
+```
+## 4-Creating QrCode Controller
 
-## Laravel Sponsors
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+Now this step,we will create generate QrCode controller file by using the following command.
+Code :
+```
+php artisan make:controller QrCodeGeneratorController
+```
+After navigate to app/http/controllers and open QrCodeGeneratorController.php file. And add the simple QrCode generation code into it.
 
-### Premium Partners
+Code :
+```
+<?php
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[OP.GG](https://op.gg)**
+namespace App\Http\Controllers;
 
-## Contributing
+use Illuminate\Http\Request;
+use QrCode;
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+class QrCodeGeneratorController extends Controller
+{
+    public function index()
+    {
+      return view('qrCode');
+    }
+}
+```
 
-## Code of Conduct
+## 6-Create Blade View
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+In this last step , create qr-generator blade view file inside resources/views directory. And then add the following code into it.
 
-## Security Vulnerabilities
+Code :
+```
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Laravel 8 Qr Code Example</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+  <div class="container">
+    <div class="row text-center mt-5">
+      <div class="col-md-6">
+        <h4>Simple Qr Code</h4>
+        {!! QrCode::size(250)->generate('Nicesnippets.com') !!}
+      </div>
+      <div class="col-md-6">
+        <h4>Color Qr Code</h4>
+        {!! QrCode::size(250)->backgroundColor(255,55,0)->generate('Nicesnippets.com') !!}
+      </div>
+    </div> 
+  </div> 
+</body>
+</html>
+```
+Now we are ready to run our custom validation rules example so run bellow command for quick run:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Code :
+```
+php artisan serve
+```
+Now you can open bellow URL on your browser:
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Code :
+```
+http://localhost:8000/qr-code
+```
