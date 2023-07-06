@@ -2,7 +2,7 @@
 
 ## Laravel Project
 
-In this project, i will use simplesoftwareio/simple-qrcode package to generate simple, text, numeric and image qr code in laravel 8 app.
+In this project, we will use simplesoftwareio/simple-qrcode package to generate simple, text, numeric and image qr code in laravel 8 app.
 
 ## 1-Installing qrcode Generator Package
 
